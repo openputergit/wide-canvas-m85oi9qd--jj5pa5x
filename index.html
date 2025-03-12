@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neubrutalism Finance Tracker</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #FF5C5C;
+            --secondary-color: #FFDE59;
+            --accent-color: #43B0F1;
+            --bg-color: #F4F2F3;
+            --text-color: #121212;
+            --shadow-offset: 5px;
+        }
+        
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+        }
+        
+        .brutalist-container {
+            background-color: white;
+            border: 3px solid black;
+            box-shadow: var(--shadow-offset) var(--shadow-offset) 0 0px #000;
+            position: relative;
+        }
+        
+        .brutalist-header {
+            background-color: var(--primary-color);
+            border-bottom: 3px solid black;
+            color: black;
+        }
+        
+        .brutalist-card {
+            background-color: white;
+            border: 3px solid black;
+            box-shadow: 5px 5px 0 0px #000;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        .brutalist-card:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 7px 7px 0 0px #000;
+        }
+        
+        .brutalist-button {
+            background-color: var(--primary-color);
+            color: black;
+            border: 3px solid black;
+            box-shadow: 3px 3px 0 0px #000;
+            font-weight: bold;
+            transition: all 0.2s ease;
+        }
+        
+        .brutalist-button:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 5px 5px 0 0px #000;
+        }
+        
+        .brutalist-button:active {
+            transform: translate(0px, 0px);
+            box-shadow: 0px 0px 0 0px #000;
+        }
+        
+        .brutalist-input {
+            border: 3px solid black;
+            background-color: white;
+            box-shadow: 3px 3px 0 0px #000;
+            transition: all 0.2s ease;
+        }
+        
+        .brutalist-input:focus {
+            outline: none;
+            transform: translate(-2px, -2px);
+            box-shadow: 5px 5px 0 0px #000;
+        }
+        
+        .brutalist-tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 3px solid black;
+            border-bottom: none;
+            margin-right: 5px;
+            font-weight: bold;
+        }
+        
+        .active-tab {
+            background-color: white;
+            transform: translateY(3px);
+        }
+        
+        .inactive-tab {
+            background-color: var(--secondary-color);
+        }
+        
+        .category-icon {
+            border: 2px solid black;
+        }
+        
+        /* Custom progress bar */
+        .brutalist-progress {
+            height: 20px;
+            border: 2px solid black;
+            background-color: white;
+        }
+        
+        .brutalist-progress-bar {
+            height: 100%;
+            background-color: var(--accent-color);
+        }
+        
+        /* Custom chart styling */
+        #chart {
+            border: 3px solid black;
+            background-color: white;
+        }
+        
+        /* Modal styling */
+        .brutalist-modal {
+            border: 3px solid black;
+            background-color: white;
+            box-shadow: 10px 10px 0 0px #000;
+        }
+        
+        /* Custom radio button and checkbox */
+        .brutalist-radio {
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid black;
+            border-radius: 50%;
+            margin-right: 8px;
+            position: relative;
+            transition: all 0.2s ease;
+        }
+        
+        .brutalist-radio:checked {
+            background-color: var(--primary-color);
+        }
+        
+        .brutalist-radio:checked::after {
+            content: '';
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background-color: black;
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+    </style>
+</head>
+<body class="min-h-screen p-4">
+    <div class="brutalist-container max-w-4xl mx-auto my-6 p-0">
+        <!-- Header -->
+        <div class="brutalist-header p-4 flex justify-between items-center">
+            <h1 class="text-2xl font-bold flex items-center">
+                <i class="bi bi-piggy-bank mr-2"></i> Finance Tracker
+            </h1>
+            <div class="flex items-center">
+                <button class="brutalist-button p-2 mr-3">
+                    <i class="bi bi-gear"></i>
+                </button>
+                <div class="w-10 h-10 rounded-full bg-white border-3 border-black flex items-center justify-center">
+                    <i class="bi bi-person-fill text-xl"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content Container -->
+        <div class="p-5">
+            <!-- Balance Summary -->
+            <div class="brutalist-card p-6 mb-8">
+                <h2 class="text-xl font-bold mb-4">Total Balance</h2>
+                <p class="text-3xl font-bold" id="totalBalance">$2,150.75</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+                    <div class="brutalist-card p-4" style="border-color: black; background-color: #CAFFBF;">
+                        <p class="text-sm font-bold">Income</p>
+                        <p class="text-xl font-bold" id="totalIncome">$3,450.00</p>
+                    </div>
+                    <div class="brutalist-card p-4" style="border-color: black; background-color: #FFADAD;">
+                        <p class="text-sm font-bold">Expenses</p>
+                        <p class="text-xl font-bold" id="totalExpenses">$1,299.25</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation Tabs -->
+            <div class="mb-6 flex border-b-3 border-black">
+                <div class="brutalist-tab active-tab" id="tab-dashboard">Dashboard</div>
+                <div class="brutalist-tab inactive-tab" id="tab-transactions">Transactions</div>
+                <div class="brutalist-tab inactive-tab" id="tab-budget">Budget</div>
+                <div class="brutalist-tab inactive-tab" id="tab-goals">Goals</div>
+            </div>
+
+            <!-- Main Content Area - Dashboard Tab (Default View) -->
+            <div id="dashboard-content" class="mb-8">
+                <!-- Spending Chart -->
+                <div class="brutalist-card p-6 mb-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-bold">Monthly Overview</h3>
+                        <select class="brutalist-input p-2 text-sm" id="month-selector">
+                            <option>January</option>
+                            <option>February</option>
+                            <option>March</option>
+                            <option>April</option>
+                            <option>May</option>
+                            <option selected>June</option>
+                        </select>
+                    </div>
+                    <div id="chart" class="w-full h-64"></div>
+                </div>
+
+                <!-- Recent Transactions -->
+                <div class="brutalist-card p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-bold">Recent Transactions</h3>
+                        <button class="brutalist-button py-1 px-3 text-sm">View All</button>
+                    </div>
+                    <div id="recent-transactions-list">
+                        <!-- Transactions will be populated here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Transactions Tab Content (Hidden by Default) -->
+            <div id="transactions-content" class="hidden">
+                <div class="mb-6 flex justify-between items-center">
+                    <h2 class="text-xl font-bold">All Transactions</h2>
+                    <div class="flex">
+                        <input type="text" class="brutalist-input p-2 mr-2" placeholder="Search transactions...">
+                        <button class="brutalist-button py-2 px-4" id="add-transaction-btn">
+                            <i class="bi bi-plus"></i> Add New
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="brutalist-card p-6">
+                    <div class="mb-4 flex justify-between flex-wrap">
+                        <div class="flex space-x-2 mb-2 sm:mb-0">
+                            <select class="brutalist-input p-2 text-sm">
+                                <option>All Categories</option>
+                                <option>Food</option>
+                                <option>Shopping</option>
+                                <option>Transport</option>
+                                <option>Bills</option>
+                            </select>
+                            <select class="brutalist-input p-2 text-sm">
+                                <option>This Month</option>
+                                <option>Last Month</option>
+                                <option>Last 3 Months</option>
+                                <option>Custom...</option>
+                            </select>
+                        </div>
+                        <div class="flex space-x-2">
+                            <button class="brutalist-button py-2 px-3 bg-white">
+                                <i class="bi bi-arrow-down-up"></i> Sort
+                            </button>
+                            <button class="brutalist-button py-2 px-3 bg-white">
+                                <i class="bi bi-filter"></i> Filter
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div id="all-transactions-list" class="mb-4">
+                        <!-- All transactions will be loaded here -->
+                    </div>
+                    
+                    <div class="text-center">
+                        <button class="brutalist-button py-2 px-6 bg-white">Load More</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Budget Tab Content (Hidden by Default) -->
+            <div id="budget-content" class="hidden">
+                <div class="mb-6 flex justify-between items-center">
+                    <h2 class="text-xl font-bold">Monthly Budget</h2>
+                    <button class="brutalist-button py-2 px-4">
+                        <i class="bi bi-plus"></i> Create Budget
+                    </button>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Budget Categories -->
+                    <div class="brutalist-card p-6">
+                        <h3 class="text-lg font-bold mb-4">Categories</h3>
+                        <div id="budget-categories" class="space-y-4">
+                            <!-- Budget categories will be populated here -->
+                        </div>
+                    </div>
+                    
+                    <!-- Budget Performance -->
+                    <div class="brutalist-card p-6">
+                        <h3 class="text-lg font-bold mb-4">Performance</h3>
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-sm font-bold">Budget Used:</span>
+                            <span class="font-bold">$1,299.25 / $2,000.00</span>
+                        </div>
+                        <div class="brutalist-progress mb-4">
+                            <div class="brutalist-progress-bar" style="width: 65%"></div>
+                        </div>
+                        <div class="text-sm font-bold mb-6">
+                            You have <span class="text-green-600">$700.75</span> left to spend this month
+                        </div>
+                        
+                        <h4 class="font-bold mb-2">Top Spending Categories</h4>
+                        <div id="budget-top-spending" class="space-y-3">
+                            <!-- Top spending categories will be populated here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Goals Tab Content (Hidden by Default) -->
+            <div id="goals-content" class="hidden">
+                <div class="mb-6 flex justify-between items-center">
+                    <h2 class="text-xl font-bold">Savings Goals</h2>
+                    <button class="brutalist-button py-2 px-4">
+                        <i class="bi bi-plus"></i> New Goal
+                    </button>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="savings-goals">
+                    <!-- Savings goals will be populated here -->
+                </div>
+                
+                <div class="mt-8 brutalist-card p-6">
+                    <h3 class="text-lg font-bold mb-4">Goal Progress Overview</h3>
+                    <div class="flex flex-wrap -mx-2">
+                        <div class="w-full md:w-1/2 px-2 mb-4">
+                            <div class="p-4 brutalist-card" style="background-color: var(--secondary-color);">
+                                <h4 class="font-bold mb-2">Total Saved</h4>
+                                <p class="text-2xl font-bold">$1,850.00</p>
+                            </div>
+                        </div>
+                        <div class="w-full md:w-1/2 px-2 mb-4">
+                            <div class="p-4 brutalist-card" style="background-color: var(--accent-color);">
+                                <h4 class="font-bold mb-2">Total Goals</h4>
+                                <p class="text-2xl font-bold">$5,000.00</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="brutalist-progress mb-4">
+                        <div class="brutalist-progress-bar" style="width: 37%"></div>
+                    </div>
+                    <div class="text-sm font-bold">
+                        You're <span class="text-primary-color font-bold">37%</span> of the way to reaching all your goals!
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Transaction Modal (Hidden by default) -->
+    <div id="add-transaction-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
+        <div class="brutalist-modal p-6 max-w-md w-full mx-4">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold">Add New Transaction</h3>
+                <button id="close-modal" class="text-2xl font-bold hover:text-gray-700">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
+            <form id="transaction-form" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-bold mb-1">Type</label>
+                    <div class="flex space-x-4">
+                        <label class="flex items-center">
+                            <input type="radio" name="type" value="expense" checked class="brutalist-radio">
+                            Expense
+                        </label>
+                        <label class="flex items-center">
+                            <input type="radio" name="type" value="income" class="brutalist-radio">
+                            Income
+                        </label>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-bold mb-1" for="transaction-amount">Amount</label>
+                    <input type="number" step="0.01" id="transaction-amount" placeholder="0.00" class="brutalist-input p-2 w-full">
+                </div>
+                <div>
+                    <label class="block text-sm font-bold mb-1" for="transaction-category">Category</label>
+                    <select id="transaction-category" class="brutalist-input p-2 w-full">
+                        <option value="">Select a category</option>
+                        <option value="food">Food & Dining</option>
+                        <option value="shopping">Shopping</option>
+                        <option value="transport">Transportation</option>
+                        <option value="bills">Bills & Utilities</option>
+                        <option value="entertainment">Entertainment</option>
+                        <option value="health">Health</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-bold mb-1" for="transaction-date">Date</label>
+                    <input type="date" id="transaction-date" class="brutalist-input p-2 w-full">
+                </div>
+                <div>
+                    <label class="block text-sm font-bold mb-1" for="transaction-description">Description (Optional)</label>
+                    <input type="text" id="transaction-description" placeholder="What was this for?" class="brutalist-input p-2 w-full">
+                </div>
+                <div class="pt-2">
+                    <button type="submit" class="brutalist-button py-2 px-4 w-full">Add Transaction</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Import Chart.js for charts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Sample data
+            const transactions = [
+                { id: 1, date: '2023-06-15', type: 'expense', category: 'food', description: 'Grocery Shopping', amount: 85.40, icon: 'bi-cart' },
+                { id: 2, date: '2023-06-14', type: 'expense', category: 'bills', description: 'Electricity Bill', amount: 120.00, icon: 'bi-lightning' },
+                { id: 3, date: '2023-06-12', type: 'income', category: 'salary', description: 'Monthly Salary', amount: 3450.00, icon: 'bi-briefcase' },
+                { id: 4, date: '2023-06-10', type: 'expense', category: 'shopping', description: 'New Shoes', amount: 89.95, icon: 'bi-bag' },
+                { id: 5, date: '2023-06-08', type: 'expense', category: 'transport', description: 'Gas', amount: 45.00, icon: 'bi-fuel-pump' },
+                { id: 6, date: '2023-06-05', type: 'expense', category: 'entertainment', description: 'Movie Tickets', amount: 28.50, icon: 'bi-film' },
+                { id: 7, date: '2023-06-03', type: 'expense', category: 'health', description: 'Pharmacy', amount: 32.40, icon: 'bi-bandaid' },
+                { id: 8, date: '2023-06-01', type: 'expense', category: 'food', description: 'Restaurant', amount: 65.20, icon: 'bi-cup-hot' }
+            ];
+
+            const budgetCategories = [
+                { id: 1, name: 'Food & Dining', allocated: 500, spent: 320, icon: 'bi-cup-hot' },
+                { id: 2, name: 'Shopping', allocated: 300, spent: 190, icon: 'bi-bag' },
+                { id: 3, name: 'Transportation', allocated: 200, spent: 120, icon: 'bi-car-front' },
+                { id: 4, name: 'Bills & Utilities', allocated: 400, spent: 380, icon: 'bi-lightning' },
+                { id: 5, name: 'Entertainment', allocated: 150, spent: 100, icon: 'bi-film' },
+                { id: 6, name: 'Health', allocated: 200, spent: 65, icon: 'bi-bandaid' },
+                { id: 7, name: 'Other', allocated: 250, spent: 124.25, icon: 'bi-three-dots' }
+            ];
+
+            const savingsGoals = [
+                { id: 1, name: 'Vacation', target: 2000, saved: 800, deadline: '2023-12-31', icon: 'bi-airplane' },
+                { id: 2, name: 'New Laptop', target: 1500, saved: 750, deadline: '2023-09-30', icon: 'bi-laptop' },
+                { id: 3, name: 'Emergency Fund', target: 1500, saved: 300, deadline: '2023-12-31', icon: 'bi-shield-plus' }
+            ];
+
+            // Tab switching
+            const tabs = ['dashboard', 'transactions', 'budget', 'goals'];
+            
+            tabs.forEach(tab => {
+                document.getElementById(`tab-${tab}`).addEventListener('click', function() {
+                    // Hide all content
+                    tabs.forEach(t => {
+                        document.getElementById(`${t}-content`).classList.add('hidden');
+                        document.getElementById(`tab-${t}`).classList.remove('active-tab');
+                        document.getElementById(`tab-${t}`).classList.add('inactive-tab');
+                    });
+                    
+                    // Show selected tab content
+                    document.getElementById(`${tab}-content`).classList.remove('hidden');
+                    document.getElementById(`tab-${tab}`).classList.add('active-tab');
+                    document.getElementById(`tab-${tab}`).classList.remove('inactive-tab');
+                });
+            });
+
+            // Initialize Chart
+            const ctx = document.getElementById('chart').getContext('2d');
+            const incomeData = [2800, 3100, 2900, 3200, 3000, 3450];
+            const expenseData = [1800, 1950, 1700, 1600, 1500, 1299.25];
+            
+            Chart.defaults.font.family = "'Space Grotesk', sans-serif";
+            Chart.defaults.font.weight = 'bold';
+            
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['January', 'February', 'March', 'April', 'May', 'June'],
+                    datasets: [
+                        {
+                            label: 'Income',
+                            data: incomeData,
+                            backgroundColor: '#CAFFBF',
+                            borderWidth: 2,
+                            borderColor: '#000',
+                            borderRadius: 0
+                        },
+                        {
+                            label: 'Expenses',
+                            data: expenseData,
+                            backgroundColor: '#FFADAD',
+                            borderWidth: 2,
+                            borderColor: '#000',
+                            borderRadius: 0
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: '#CCC',
+                                drawBorder: true,
+                            },
+                            ticks: {
+                                font: {
+                                    weight: 'bold'
+                                }
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                font: {
+                                    weight: 'bold'
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                usePointStyle: true,
+                                boxWidth: 10,
+                                font: {
+                                    weight: 'bold'
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Populate Recent Transactions
+            const recentTransactionsContainer = document.getElementById('recent-transactions-list');
+            
+            transactions.slice(0, 5).forEach(transaction => {
+                const transactionDiv = document.createElement('div');
+                transactionDiv.className = 'flex items-center justify-between py-3 border-b-2 border-black';
+                
+                const iconBgColor = transaction.type === 'expense' ? '#FFADAD' : '#CAFFBF';
+                
+                transactionDiv.innerHTML = `
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 rounded-full border-2 border-black flex items-center justify-center mr-3" style="background-color: ${iconBgColor}">
+                            <i class="bi ${transaction.icon}"></i>
+                        </div>
+                        <div>
+                            <p class="font-bold">${transaction.description}</p>
+                            <p class="text-xs">${formatDate(transaction.date)}</p>
+                        </div>
+                    </div>
+                    <span class="font-bold">
+                        ${transaction.type === 'expense' ? '-' : '+'}$${transaction.amount.toFixed(2)}
+                    </span>
+                `;
+                
+                recentTransactionsContainer.appendChild(transactionDiv);
+            });
+
+            // Populate All Transactions
+            const allTransactionsContainer = document.getElementById('all-transactions-list');
+            
+            transactions.forEach(transaction => {
+                const transactionDiv = document.createElement('div');
+                transactionDiv.className = 'flex items-center justify-between py-3 border-b-2 border-black';
+                
+                const iconBgColor = transaction.type === 'expense' ? '#FFADAD' : '#CAFFBF';
+                
+                transactionDiv.innerHTML = `
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 rounded-full border-2 border-black flex items-center justify-center mr-3" style="background-color: ${iconBgColor}">
+                            <i class="bi ${transaction.icon}"></i>
+                        </div>
+                        <div>
+                            <p class="font-bold">${transaction.description}</p>
+                            <p class="text-xs">${formatDate(transaction.date)} · ${capitalizeFirstLetter(transaction.category)}</p>
+                        </div>
+                    </div>
+                    <span class="font-bold">
+                        ${transaction.type === 'expense' ? '-' : '+'}$${transaction.amount.toFixed(2)}
+                    </span>
+                `;
+                
+                allTransactionsContainer.appendChild(transactionDiv);
+            });
+
+            // Populate Budget Categories
+            const budgetCategoriesContainer = document.getElementById('budget-categories');
+            
+            budgetCategories.forEach(category => {
+                const percentage = (category.spent / category.allocated) * 100;
+                const statusColor = percentage > 90 ? '#FFADAD' : percentage > 75 ? '#FDFFB6' : '#CAFFBF';
+                
+                const categoryDiv = document.createElement('div');
+                categoryDiv.className = 'border-b-2 border-black pb-3';
+                
+                categoryDiv.innerHTML = `
+                    <div class="flex justify-between items-center mb-2">
+                        <div class="flex items-center">
+                            <div class="w-8 h-8 rounded-full border-2 border-black flex items-center justify-center mr-2">
+                                <i class="bi ${category.icon}"></i>
+                            </div>
+                            <span class="font-bold">${category.name}</span>
+                        </div>
+                        <span class="font-bold">
+                            $${category.spent.toFixed(2)} / $${category.allocated.toFixed(2)}
+                        </span>
+                    </div>
+                    <div class="brutalist-progress">
+                        <div class="brutalist-progress-bar" 
+                            style="width: ${Math.min(percentage, 100)}%; background-color: ${statusColor}"></div>
+                    </div>
+                `;
+                
+                budgetCategoriesContainer.appendChild(categoryDiv);
+            });
+
+            // Populate Top Spending Categories
+            const topSpendingContainer = document.getElementById('budget-top-spending');
+            
+            // Sort categories by spent amount (descending)
+            const sortedCategories = [...budgetCategories].sort((a, b) => b.spent - a.spent);
+            
+            sortedCategories.slice(0, 3).forEach(category => {
+                const categoryDiv = document.createElement('div');
+                categoryDiv.className = 'flex justify-between items-center border-b-2 border-black py-2';
+                
+                categoryDiv.innerHTML = `
+                    <div class="flex items-center">
+                        <div class="w-8 h-8 rounded-full border-2 border-black flex items-center justify-center mr-2" style="background-color: var(--secondary-color)">
+                            <i class="bi ${category.icon}"></i>
+                        </div>
+                        <span class="font-bold">${category.name}</span>
+                    </div>
+                    <span class="font-bold">$${category.spent.toFixed(2)}</span>
+                `;
+                
+                topSpendingContainer.appendChild(categoryDiv);
+            });
+
+            // Populate Savings Goals
+            const savingsGoalsContainer = document.getElementById('savings-goals');
+            
+            savingsGoals.forEach(goal => {
+                const percentage = (goal.saved / goal.target) * 100;
+                
+                const goalDiv = document.createElement('div');
+                goalDiv.className = 'brutalist-card p-5';
+                
+                goalDiv.innerHTML = `
+                    <div class="flex justify-between items-center mb-3">
+                        <div class="flex items-center">
+                            <div class="w-10 h-10 rounded-full border-2 border-black flex items-center justify-center mr-2" style="background-color: var(--accent-color)">
+                                <i class="bi ${goal.icon}"></i>
+                            </div>
+                            <span class="font-bold">${goal.name}</span>
+                        </div>
+                        <span class="text-xs">Due: ${formatDateShort(goal.deadline)}</span>
+                    </div>
+                    <div class="mb-2 flex justify-between items-center">
+                        <span class="text-xs font-bold">Progress:</span>
+                        <span class="text-xs font-bold">${percentage.toFixed(0)}%</span>
+                    </div>
+                    <div class="brutalist-progress mb-3">
+                        <div class="brutalist-progress-bar" style="width: ${percentage}%"></div>
+                    </div>
+                    <div class="flex justify-between text-sm font-bold">
+                        <span>Saved: $${goal.saved.toFixed(2)}</span>
+                        <span>Goal: $${goal.target.toFixed(2)}</span>
+                    </div>
+                `;
+                
+                savingsGoalsContainer.appendChild(goalDiv);
+            });
+
+            // Add Transaction Modal Functionality
+            document.getElementById('add-transaction-btn').addEventListener('click', function() {
+                document.getElementById('add-transaction-modal').classList.remove('hidden');
+            });
+            
+            document.getElementById('close-modal').addEventListener('click', function() {
+                document.getElementById('add-transaction-modal').classList.add('hidden');
+            });
+            
+            document.getElementById('transaction-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Get form values
+                const type = document.querySelector('input[name="type"]:checked').value;
+                const amount = parseFloat(document.getElementById('transaction-amount').value);
+                const category = document.getElementById('transaction-category').value;
+                const date = document.getElementById('transaction-date').value;
+                const description = document.getElementById('transaction-description').value || 
+                                   (type === 'income' ? 'Income' : capitalizeFirstLetter(category));
+                
+                let icon;
+                switch(category) {
+                    case 'food': icon = 'bi-cup-hot'; break;
+                    case 'shopping': icon = 'bi-bag'; break;
+                    case 'transport': icon = 'bi-car-front'; break;
+                    case 'bills': icon = 'bi-lightning'; break;
+                    case 'entertainment': icon = 'bi-film'; break;
+                    case 'health': icon = 'bi-bandaid'; break;
+                    default: icon = 'bi-credit-card';
+                }
+                
+                // Create new transaction object
+                const newTransaction = {
+                    id: transactions.length + 1,
+                    date,
+                    type,
+                    category,
+                    description,
+                    amount,
+                    icon
+                };
+                
+                // Add to transactions array
+                transactions.unshift(newTransaction);
+                
+                // Update UI
+                updateTransactionsList();
+                updateBalanceSummary();
+                
+                // Close modal
+                document.getElementById('add-transaction-modal').classList.add('hidden');
+                document.getElementById('transaction-form').reset();
+                
+                // Set today's date as default
+                document.getElementById('transaction-date').value = new Date().toISOString().split('T')[0];
+            });
+            
+            // Set today's date as default for the transaction form
+            document.getElementById('transaction-date').value = new Date().toISOString().split('T')[0];
+
+            // Update Transactions List
+            function updateTransactionsList() {
+                // Update Recent Transactions
+                recentTransactionsContainer.innerHTML = '';
+                
+                transactions.slice(0, 5).forEach(transaction => {
+                    const transactionDiv = document.createElement('div');
+                    transactionDiv.className = 'flex items-center justify-between py-3 border-b-2 border-black';
+                    
+                    const iconBgColor = transaction.type === 'expense' ? '#FFADAD' : '#CAFFBF';
+                    
+                    transactionDiv.innerHTML = `
+                        <div class="flex items-center">
+                            <div class="w-10 h-10 rounded-full border-2 border-black flex items-center justify-center mr-3" style="background-color: ${iconBgColor}">
+                                <i class="bi ${transaction.icon}"></i>
+                            </div>
+                            <div>
+                                <p class="font-bold">${transaction.description}</p>
+                                <p class="text-xs">${formatDate(transaction.date)}</p>
+                            </div>
+                        </div>
+                        <span class="font-bold">
+                            ${transaction.type === 'expense' ? '-' : '+'}$${transaction.amount.toFixed(2)}
+                        </span>
+                    `;
+                    
+                    recentTransactionsContainer.appendChild(transactionDiv);
+                });
+                
+                // Update All Transactions
+                allTransactionsContainer.innerHTML = '';
+                
+                transactions.forEach(transaction => {
+                    const transactionDiv = document.createElement('div');
+                    transactionDiv.className = 'flex items-center justify-between py-3 border-b-2 border-black';
+                    
+                    const iconBgColor = transaction.type === 'expense' ? '#FFADAD' : '#CAFFBF';
+                    
+                    transactionDiv.innerHTML = `
+                        <div class="flex items-center">
+                            <div class="w-10 h-10 rounded-full border-2 border-black flex items-center justify-center mr-3" style="background-color: ${iconBgColor}">
+                                <i class="bi ${transaction.icon}"></i>
+                            </div>
+                            <div>
+                                <p class="font-bold">${transaction.description}</p>
+                                <p class="text-xs">${formatDate(transaction.date)} · ${capitalizeFirstLetter(transaction.category)}</p>
+                            </div>
+                        </div>
+                        <span class="font-bold">
+                            ${transaction.type === 'expense' ? '-' : '+'}$${transaction.amount.toFixed(2)}
+                        </span>
+                    `;
+                    
+                    allTransactionsContainer.appendChild(transactionDiv);
+                });
+            }
+
+            // Update Balance Summary
+            function updateBalanceSummary() {
+                let totalIncome = 0;
+                let totalExpenses = 0;
+                
+                transactions.forEach(transaction => {
+                    if (transaction.type === 'income') {
+                        totalIncome += transaction.amount;
+                    } else {
+                        totalExpenses += transaction.amount;
+                    }
+                });
+                
+                const balance = totalIncome - totalExpenses;
+                
+                document.getElementById('totalIncome').textContent = `$${totalIncome.toFixed(2)}`;
+                document.getElementById('totalExpenses').textContent = `$${totalExpenses.toFixed(2)}`;
+                document.getElementById('totalBalance').textContent = `$${balance.toFixed(2)}`;
+            }
+
+            // Utility functions
+            function formatDate(dateString) {
+                const options = { month: 'short', day: 'numeric', year: 'numeric' };
+                return new Date(dateString).toLocaleDateString('en-US', options);
+            }
+            
+            function formatDateShort(dateString) {
+                const options = { month: 'short', day: 'numeric' };
+                return new Date(dateString).toLocaleDateString('en-US', options);
+            }
+            
+            function capitalizeFirstLetter(string) {
+                return string.charAt(0).toUpperCase() + string.slice(1);
+            }
+        });
+    </script>
+<script>document.body.addEventListener('wheel', e => { if (!e.ctrlKey) return; e.preventDefault(); return }, { passive: false })</script>
+	</body>
+</html>
